@@ -25,6 +25,7 @@
     (cond
     [(= i (length first_row)) (display "\n")]
     [else
+
      (display (string-append (string-repeat (list-ref max_arr i) "-") "+"))
      (pprint-separator first_row max_arr (+ i 1))]))
 
@@ -36,10 +37,15 @@
                            [else
                             (+ i 2)]))
                        (find-max table))])
+      (display "+")
       (pprint-separator (list-ref table 0) max_arr 0)
+      (display "|")
       (pprint-row (list-ref table 0) max_arr 0)
+      (display "+")
       (pprint-separator (list-ref table 0) max_arr 0)
       (for-each (lambda (row)
+                  (display "|")
                   (pprint-row (list-ref table row) max_arr 0))
                 (list-tail (range (length table)) 1))
+      (display "+")
       (pprint-separator (list-ref table 0) max_arr 0)))

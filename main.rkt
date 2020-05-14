@@ -1,7 +1,7 @@
 #lang racket
 
 (require "table_parser.rkt")
-
+(require "filters.rkt")
 
 (let loop ()
   (display ">")
@@ -9,4 +9,6 @@
   (cond
     [(regexp-match #rx"load\\(\"(.*)\"\\)" input)
      (load (list-ref (regexp-match #rx"load\\(\"(.*)\"\\)" input) 1))]
-(loop)))
+    [(equal? (substring input 0 6) "select" )
+     (parse-SQL (query-to-hash (string-split input " ")))])
+(loop))
