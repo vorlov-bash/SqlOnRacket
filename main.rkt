@@ -2,13 +2,14 @@
 
 (require "table_parser.rkt")
 (require "filters.rkt")
+(require "pprinter.rkt")
 
 (let loop ()
   (display ">")
   (define input (read-line (current-input-port) 'any))
   (cond
     [(regexp-match #rx"load\\(\"(.*)\"\\)" input)
-     (load (list-ref (regexp-match #rx"load\\(\"(.*)\"\\)" input) 1))]
+     (pprint (load (list-ref (regexp-match #rx"load\\(\"(.*)\"\\)" input) 1)))]
     [(equal? (substring input 0 6) "select" )
      (parse-SQL (query-to-hash (string-split input " ")))])
 (loop))
