@@ -22,10 +22,20 @@
      (strip-trailing-whitespace? #t))))
 
 (define (query-to-hash split-query)
+  (define to-hash
+    (lambda (hash-query split-query)
+      (map (lambda (i)
+             (hash-set! hash-query (list-ref split-query i) (list-ref split-query (+ i 1))))
+           (range 0 (length split-query) 2))))
+  
   (let ([hash-query (make-hash)])
-    (map (lambda (i)
-           (hash-set! hash-query (list-ref split-query i) (list-ref split-query (+ i 1))))
-         (range 0 (length split-query) 2))
+    (cond
+      [(equal? (list-ref split-query 1) "distinct")
+       (hash-set! hash-query "distinct" #t)
+       (to-hash hash-query (remove "distinct" split-query))]
+      [else
+       (hash-set! hash-query "distinct" #f)
+       (to-hash hash-query split-query)])
     hash-query))
 
 

@@ -6,14 +6,14 @@
 (provide parse-SQL)
 
 
-(define (int-check tableDF)
+(define (int-check hash-tableDF)
   (for-each (lambda (hash-of-table)
               (hash-for-each hash-of-table (lambda (k v)
                         (cond
                           [(string->number v)
                            (hash-set! hash-of-table k (string->number v))]))))
-            tableDF)
-  tableDF)
+            hash-tableDF)
+  hash-tableDF)
 
 
 (define (find-pair pair-row key i)
@@ -31,13 +31,18 @@
                    (find-pair pair-row col 0))
                  columns))
           pair-tableDF)]))
-     
+
+(define (distinct DF column)
+  (remove-duplicates DF (lambda (x y)
+                          (equal? (hash-ref y column) (hash-ref x column)))))
       
 
 (define (parse-SQL hash-query)
   (define table-name (hash-ref hash-query "from"))
-  (define tableDF (perform-table-to-hashes (load table-name)))
-  (define intDF (int-check tableDF))
-  (define pair-tableDF (perform-hash-table-to-pair tableDF))
-  (define selectDF (select pair-tableDF (string-split (hash-ref hash-query "select") ",")))
+  (define hash-tableDF (perform-table-to-hashes (load table-name)))
+  (define intDF (int-check hash-tableDF))
+  (define distinctDF (if (hash-ref hash-query "distinct")
+                         (distinct intDF (list-ref (string-split (hash-ref hash-query "select") ",") 0))
+                         (intDF)))
+  (define selectDF (select (perform-hash-table-to-pair distinctDF) (string-split (hash-ref hash-query "select") ",")))
   (pprint (perform-pair-table-to-list selectDF)))
