@@ -1,0 +1,4 @@
+## Usage
+```
+> load("resources/<filename>")
+```
