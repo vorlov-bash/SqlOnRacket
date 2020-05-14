@@ -1,1 +1,8 @@
+# Compiled #
+############
 compiled/
+
+
+# File extentions #
+###################
+*.bak

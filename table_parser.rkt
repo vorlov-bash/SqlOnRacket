@@ -2,7 +2,7 @@
 
 (require csv-reading)
 (require "pprinter.rkt")
-
+(provide load)
 
 (define make-food-csv-reader
   (make-csv-reader-maker
@@ -28,9 +28,9 @@
     
 
 
-(define (perform-table table filter)
+(define (perform-table table)
   (map (lambda (i)
-         (perform-row (list-ref table i) (list-ref table 0) filter))
+         (perform-row (list-ref table i) (list-ref table 0)))
        (list-tail (range (length table)) 1)))
 
 
