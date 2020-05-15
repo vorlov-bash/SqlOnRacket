@@ -6,6 +6,7 @@
 (provide parse-SQL)
 
 
+; "20" -> 20; "34"(string -> 34(number)
 (define (int-check hash-tableDF)
   (for-each (lambda (hash-of-table)
               (hash-for-each hash-of-table (lambda (k v)
@@ -37,6 +38,7 @@
                           (equal? (hash-ref y column) (hash-ref x column)))))
 
 (define (where-between DF condition)
+  ;contidion: row=1
   (cond
     [(string-contains? condition "=") (filter-map (lambda (x)
                                                     (and (=
