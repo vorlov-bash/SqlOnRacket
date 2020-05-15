@@ -8,4 +8,5 @@
 ```
 > select id_event,date_agenda,id_question from resources/plenary_register_mps-skl9.tsv
 > select distinct col,id_fr,row,col from resources/map_zal-skl9.csv
+> select col,id_fr,row,col from resources/map_zal-skl9.csv where col=10
 ```
