@@ -35,14 +35,46 @@
 (define (distinct DF column)
   (remove-duplicates DF (lambda (x y)
                           (equal? (hash-ref y column) (hash-ref x column)))))
-      
+
+(define (where-between DF condition)
+  (cond
+    [(string-contains? condition "=") (filter-map (lambda (x)
+                                                    (and (=
+                                                          (hash-ref x (first (string-split condition "=")))
+                                                          (string->number (second (string-split condition "=")))) x))
+                                                  DF)]
+    
+    [(string-contains? condition ">") (filter-map (lambda (x)
+                                                    (and (>
+                                                          (hash-ref x (first (string-split condition ">")))
+                                                          (string->number (second (string-split condition ">")))) x))
+                                                  DF)]))
+    
 
 (define (parse-SQL hash-query)
+  (displayln hash-query)
   (define table-name (hash-ref hash-query "from"))
+  
   (define hash-tableDF (perform-table-to-hashes (load table-name)))
+  (displayln "hash-table")
+  
   (define intDF (int-check hash-tableDF))
+  (displayln "intDF")
+  
+  (define first-col (list-ref (string-split (hash-ref hash-query "select") ",") 0))
+  (displayln "first-col")
+  (displayln (hash-has-key? hash-query "where"))
+  
+  (define where-betweenDF (cond
+                            [(hash-has-key? hash-query "where")
+                             (where-between intDF (hash-ref hash-query "where"))]
+                            [else intDF]))
+
+  (displayln "where")
   (define distinctDF (if (hash-ref hash-query "distinct")
-                         (distinct intDF (list-ref (string-split (hash-ref hash-query "select") ",") 0))
-                         (intDF)))
+                         (distinct where-betweenDF first-col)
+                         where-betweenDF))
+  (displayln "distinct")
   (define selectDF (select (perform-hash-table-to-pair distinctDF) (string-split (hash-ref hash-query "select") ",")))
+                                
   (pprint (perform-pair-table-to-list selectDF)))
