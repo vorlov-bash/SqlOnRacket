@@ -6,3 +6,4 @@ compiled/
 # File extentions #
 ###################
 *.bak
+*.[0-9]*

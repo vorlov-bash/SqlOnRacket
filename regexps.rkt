@@ -1,5 +1,7 @@
 #lang racket
+(provide main-regex)
 
+;; Process main input query
 (define (remove-false-from-list regex-list)
   (remove (list-ref (remf* false? regex-list) 0) (remf* false? regex-list)))
 
@@ -38,4 +40,6 @@
        [(equal? (first query) "orderby") (hash-set! query-hash "orderby" (second query)) (query-to-hash (list-tail query 2) query-hash)])]))
 
 
-(main-regex "select MED(row) from table where(row=1 and col=2) orderby(row,col)")
+;(main-regex "select MED(row) from table where(row=1 and col=2) orderby(row,col)")
+;;
+  

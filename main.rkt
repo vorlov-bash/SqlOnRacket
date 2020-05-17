@@ -3,6 +3,7 @@
 (require "table_parser.rkt")
 (require "filters.rkt")
 (require "pprinter.rkt")
+(require "regexps.rkt")
 
 (let loop ()
   (display ">")
@@ -11,5 +12,5 @@
     [(regexp-match #rx"load\\(\"(.*)\"\\)" input)
      (pprint (load (list-ref (regexp-match #rx"load\\(\"(.*)\"\\)" input) 1)))]
     [(equal? (substring input 0 6) "select" )
-     (parse-SQL (query-to-hash (string-split input " ")))])
+     (parse-SQL (main-regex input))])
 (loop))

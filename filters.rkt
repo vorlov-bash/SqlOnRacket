@@ -36,9 +36,10 @@
 (define (distinct DF column)
   (remove-duplicates DF (lambda (x y)
                           (equal? (hash-ref y column) (hash-ref x column)))))
+(define (one-where DF piece)
+  
 
-(define (where-between DF condition)
-  ;contidion: row=1
+(define (where DF condition-list)
   (cond
     [(string-contains? condition "=") (filter-map (lambda (x)
                                                     (and (=
@@ -65,17 +66,16 @@
   
   (define first-col (list-ref (string-split (hash-ref hash-query "select") ",") 0))
   (displayln "first-col")
-  (displayln (hash-has-key? hash-query "where"))
   
-  (define where-betweenDF (cond
-                            [(hash-has-key? hash-query "where")
-                             (where-between intDF (hash-ref hash-query "where"))]
-                            [else intDF]))
+  (define whereDF (cond
+                    [(hash-has-key? hash-query "where")
+                     (where intDF (string-split (hash-ref hash-query "where") " "))]
+                    [else intDF]))
 
   (displayln "where")
   (define distinctDF (if (hash-ref hash-query "distinct")
-                         (distinct where-betweenDF first-col)
-                         where-betweenDF))
+                         (distinct whereDF first-col)
+                         whereDF))
   (displayln "distinct")
   (define selectDF (select (perform-hash-table-to-pair distinctDF) (string-split (hash-ref hash-query "select") ",")))
                                 
