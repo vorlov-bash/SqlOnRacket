@@ -16,6 +16,8 @@
     [else
      (push-to-other-stack (push to_stack (top from_stack)) (pop from_stack))]))
 
+; :stack: <#Stack>
+; :op: string
 (define (push-with-precedence stack op)
   (cond
     [(stack-empty? stack) (push stack op)]
@@ -24,6 +26,9 @@
     [else
      (push-with-precedence (pop stack) op)]))
 
+; :stack: <#Stack>
+; :output: <#Stack>
+; :op: string
 (define (return-push-with-precedence stack output op)
   (cond
     [(stack-empty? stack) output]

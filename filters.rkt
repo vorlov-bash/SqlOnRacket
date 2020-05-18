@@ -3,10 +3,13 @@
 
 (require "table_parser.rkt")
 (require "pprinter.rkt")
+(require "where_utils.rkt")
+(require "polish.rkt")
+(require typed-stack)
 (provide parse-SQL)
 
 
-; "20" -> 20; "34"(string -> 34(number)
+; "20" -> 20; "34"(string) -> 34(number)
 (define (int-check hash-tableDF)
   (for-each (lambda (hash-of-table)
               (hash-for-each hash-of-table (lambda (k v)
@@ -36,22 +39,6 @@
 (define (distinct DF column)
   (remove-duplicates DF (lambda (x y)
                           (equal? (hash-ref y column) (hash-ref x column)))))
-(define (one-where DF piece)
-  
-
-(define (where DF condition-list)
-  (cond
-    [(string-contains? condition "=") (filter-map (lambda (x)
-                                                    (and (=
-                                                          (hash-ref x (first (string-split condition "=")))
-                                                          (string->number (second (string-split condition "=")))) x))
-                                                  DF)]
-    
-    [(string-contains? condition ">") (filter-map (lambda (x)
-                                                    (and (>
-                                                          (hash-ref x (first (string-split condition ">")))
-                                                          (string->number (second (string-split condition ">")))) x))
-                                                  DF)]))
     
 
 (define (parse-SQL hash-query)
@@ -69,14 +56,11 @@
   
   (define whereDF (cond
                     [(hash-has-key? hash-query "where")
-                     (where intDF (string-split (hash-ref hash-query "where") " "))]
+                     (where (where-to-polish (string-split (hash-ref hash-query "where") " ") (make-stack) (make-stack)) (make-stack) 0 intDF)]
                     [else intDF]))
-
   (displayln "where")
-  (define distinctDF (if (hash-ref hash-query "distinct")
-                         (distinct whereDF first-col)
-                         whereDF))
-  (displayln "distinct")
-  (define selectDF (select (perform-hash-table-to-pair distinctDF) (string-split (hash-ref hash-query "select") ",")))
-                                
-  (pprint (perform-pair-table-to-list selectDF)))
+  (cond
+    [(empty? whereDF) (displayln "No mathes.")]
+    [else
+     (define selectDF (select (perform-hash-table-to-pair whereDF) (string-split (hash-ref hash-query "select") ",")))
+     (pprint (perform-pair-table-to-list selectDF))]))

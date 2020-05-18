@@ -1,13 +1,14 @@
 #lang racket
 (require typed-stack)
 (require "stack.rkt")
-
+(provide where-to-polish)
+ 
 (define precedence (hash "NOT" 3 "AND" 2 "OR" 1))
 
 ; :where_conditions: list
 ; :stack: <#Stack>
 ; :output: <#Stack>
-; :return: list
+; :return: <#Stack>
 (define (where-to-polish where_conditions stack output)
   (display "stack: ")
   (displayln (stack->list stack))
@@ -44,4 +45,4 @@
       stack
       (push output (first where_conditions)))]))
 
-(stack->list (where-to-polish (string-split "ror=1 OR NOT ror=1 AND col=3" " ") (make-stack) (make-stack)))
+(stack->list (where-to-polish (string-split "ror=1 AND ror=1" " ") (make-stack) (make-stack)))
