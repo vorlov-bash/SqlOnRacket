@@ -3,11 +3,10 @@
 
 ;; Process main input query
 (define (remove-false-from-list regex-list)
-  (displayln "remove-false")
   (remove (list-ref (remf* false? regex-list) 0) (remf* false? regex-list)))
 
 (define (main-regex query)
-  (query-to-hash (remove-false-from-list (regexp-match #px"(select) (?:(distinct) (.*)|(MED)\\((\\w*)\\)|(COUNT)\\((\\w*)\\)|(SUM)\\((\\w*)\\)|(.*)) (from) (\\w*\\/\\w*.(?:csv|tsv))(?:\\s)?(?:(where)\\(([\\w\\d\\s=,]*)\\)|(orderby)\\(([\\w\\d=,]*(?:\\sASC|\\sDESC)?)\\))?(?:\\s)?(?:(orderby)\\(([\\w\\d=,]*(?:\\sASC|\\sDESC)?)\\))?"
+  (query-to-hash (remove-false-from-list (regexp-match #px"(select) (?:(distinct) (.*)|(MED)\\((\\w*)\\)|(COUNT)\\((\\w*)\\)|(SUM)\\((\\w*)\\)|(.*)) (from) (\\w*\\/\\w*.(?:csv|tsv))(?:\\s)?(?:(where)\\(([\\w\\d\\s=<>,]*)\\)|(orderby)\\(([\\w\\d=,]*(?:\\sASC|\\sDESC)?)\\))?(?:\\s)?(?:(orderby)\\(([\\w\\d=,]*(?:\\sASC|\\sDESC)?)\\))?"
                                                        query)) (make-hash)))
 
 (define (query-to-hash query query-hash)
@@ -41,6 +40,6 @@
        [(equal? (first query) "orderby") (hash-set! query-hash "orderby" (second query)) (query-to-hash (list-tail query 2) query-hash)])]))
 
 
-(main-regex "select MED(row) from resources/csv.tsv where(row=1 and col=2) orderby(row,col)")
+;(main-regex "select MED(row) from resources/csv.tsv where(row=1 and col=2) orderby(row,col)")
 ;;
   

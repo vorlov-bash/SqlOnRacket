@@ -10,10 +10,6 @@
 ; :output: <#Stack>
 ; :return: <#Stack>
 (define (where-to-polish where_conditions stack output)
-  (display "stack: ")
-  (displayln (stack->list stack))
-  (display "output: ")
-  (displayln (stack->list output))
   (cond
     [(empty? where_conditions) (push-to-other-stack stack output)]
     [(regexp-match #px"(AND|OR|NOT)" (first where_conditions))
@@ -38,11 +34,9 @@
         (where-to-polish
          (remove (first where_conditions) where_conditions)
          (push-with-precedence stack (first where_conditions))
-         (push-to-other-stack output stack))])]
+         (return-push-with-precedence stack output (first where_conditions)))])]
     [else
      (where-to-polish
       (remove (first where_conditions) where_conditions)
       stack
       (push output (first where_conditions)))]))
-
-(stack->list (where-to-polish (string-split "ror=1 AND ror=1" " ") (make-stack) (make-stack)))
