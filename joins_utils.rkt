@@ -88,9 +88,9 @@
      
 
 ;; INNER_JOIN
-(define (inner-join-helper hash-row DF2 cond)
+(define (inner-join-helper hash-row DF2 condition)
   (filter-map (lambda (x)
-                (and (equal? (hash-ref hash-row (first cond)) (hash-ref x (second cond))) x))
+                (and (equal? (hash-ref hash-row (first condition)) (hash-ref x (second condition))) x))
                 DF2))
 
 (define (inner-join-util DF1 DF2 condition joinedDF)
