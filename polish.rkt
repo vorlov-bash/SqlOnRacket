@@ -4,7 +4,6 @@
 (provide where-to-polish)
  
 (define precedence (hash "not" 3 "and" 2 "or" 1))
-
 ; :where_conditions: list
 ; :stack: <#Stack>
 ; :output: <#Stack>
@@ -12,7 +11,7 @@
 (define (where-to-polish where_conditions stack output)
   (cond
     [(empty? where_conditions) (push-to-other-stack stack output)]
-    [(regexp-match #px"(and|or|not)" (first where_conditions))
+    [(regexp-match #px"(^and$|^or$|^not$)" (first where_conditions))
      (cond
        [(stack-empty? stack) (where-to-polish
                               (remove (first where_conditions) where_conditions)

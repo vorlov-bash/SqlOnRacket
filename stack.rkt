@@ -5,7 +5,7 @@
 (provide return-push-with-precedence)
 
 
-(define precedence (hash "NOT" 3 "AND" 2 "OR" 1))
+(define precedence (hash "not" 3 "and" 2 "or" 1))
 
 ; :to_stack: <#Stack>
 ; :from_stack: <#Stack>

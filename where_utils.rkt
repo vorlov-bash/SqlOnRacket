@@ -148,7 +148,7 @@
 (define (where polish_conds stack increment DF)
   (cond
     [(stack-empty? polish_conds) (top stack)]
-    [(regexp-match #px"(and|or|not)" (top polish_conds))
+    [(regexp-match #px"(^and$|^or$|^not$)" (top polish_conds))
      (cond
        [(equal? "and" (top polish_conds))
         (where (pop polish_conds) (push (pop (pop stack)) (and-util (top stack) (top (pop stack)) DF)) (+ increment 1) DF)]
