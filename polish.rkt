@@ -3,7 +3,7 @@
 (require "stack.rkt")
 (provide where-to-polish)
  
-(define precedence (hash "NOT" 3 "AND" 2 "OR" 1))
+(define precedence (hash "not" 3 "and" 2 "or" 1))
 
 ; :where_conditions: list
 ; :stack: <#Stack>
@@ -12,7 +12,7 @@
 (define (where-to-polish where_conditions stack output)
   (cond
     [(empty? where_conditions) (push-to-other-stack stack output)]
-    [(regexp-match #px"(AND|OR|NOT)" (first where_conditions))
+    [(regexp-match #px"(and|or|not)" (first where_conditions))
      (cond
        [(stack-empty? stack) (where-to-polish
                               (remove (first where_conditions) where_conditions)

@@ -5,9 +5,9 @@
 
 (define (agregate func DF column)
   (cond
-    [(equal? func "COUNT") (list (hash (string-join (list "COUNT(" column ")") "") (count-util DF column)))]
-    [(equal? func "SUM") (list (hash (string-join (list "SUM(" column ")") "") (sum-util DF column 0 0)))]
-    [(equal? func "MED") (list (hash (string-join (list "MED(" column ")") "") (median-util DF column)))]))
+    [(equal? func "count") (list (hash (string-join (list "count(" column ")") "") (count-util DF column)))]
+    [(equal? func "sum") (list (hash (string-join (list "sum(" column ")") "") (sum-util DF column 0 0)))]
+    [(equal? func "med") (list (hash (string-join (list "med(" column ")") "") (median-util DF column)))]))
 
 (define (return-column-name func column)
   (string-join (list func "(" column ")") ""))

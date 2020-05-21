@@ -148,11 +148,11 @@
 (define (where polish_conds stack increment DF)
   (cond
     [(stack-empty? polish_conds) (top stack)]
-    [(regexp-match #px"(AND|OR|NOT)" (top polish_conds))
+    [(regexp-match #px"(and|or|not)" (top polish_conds))
      (cond
-       [(equal? "AND" (top polish_conds))
+       [(equal? "and" (top polish_conds))
         (where (pop polish_conds) (push (pop (pop stack)) (and-util (top stack) (top (pop stack)) DF)) (+ increment 1) DF)]
-       [(equal? "OR" (top polish_conds))
+       [(equal? "or" (top polish_conds))
         (where (pop polish_conds) (push (pop (pop stack)) (or-util (top stack) (top (pop stack)) DF)) (+ increment 1) DF)])]
     
     [else
@@ -183,5 +183,6 @@
 
 ; :op: string
 ; :DF: ({...}...{...})
-  
+
+
   

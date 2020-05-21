@@ -44,7 +44,7 @@
 (define (perform-row-to-hash row first_row)
   (let ([hash_row (make-hash)])
     (for-each (lambda (j)
-                (dict-set! hash_row (list-ref first_row j) (list-ref row j)))
+                (hash-set! hash_row (list-ref first_row j) (list-ref row j)))
               (range (length row)))
   hash_row))
     
