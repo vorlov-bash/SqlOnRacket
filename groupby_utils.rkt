@@ -1,4 +1,5 @@
 #lang racket
+(provide count-groupby)
 
 (define lst (list (hash "col" 3 "row" 1 "title" "hello")
                   (hash "col" 3 "row" 4 "title" "lol")
@@ -14,9 +15,9 @@
     [else
      (let ([result (length (filter-map (lambda (x)
                                          (and (equal? (hash-ref x column) (hash-ref (list-ref DF increment) column)) x))
-                                       lst))])
+                                       DF))])
        (count-groupby
-        (list-set DF increment (hash-set (list-ref lst increment) (string-join (list "COUNT(" column ")") "") result))
+        (list-set DF increment (hash-set (list-ref DF increment) (string-join (list "count(" column ")") "") result))
         column
         (add1 increment)))]))
 

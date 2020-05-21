@@ -1,12 +1,13 @@
 #lang racket
 (provide perform-query)
+(provide condition-to-list)
 
 (define (perform-query query)
-  (let ([re-query (regexp-match #px"(select (?:distinct [\\w\\d\\s(),]*|[\\w\\d\\s(),*]*) from [\\w\\d\\/]*\\.(?:csv|tsv))(?:\\s?)(.*)" query)])
+  (let ([re-query (regexp-match #px"(select (?:distinct .*|.*) from [\\w\\d\\/]*\\.(?:csv|tsv))(?:\\s?)(.*)" query)])
     (cond
       [(not re-query) (displayln "Wrong syntaxis")]
       [(not (empty? query))
-       (define group1 (group1-query-to-hash (string-split (second re-query) " ") (hash)))
+       (define group1 (group1-query-to-hash (filter string? (list-tail (regexp-match #px"(select) (?:(distinct) (.*)|(.*)) (from) ([\\w\\d\\/]*\\.(?:csv|tsv))" (second re-query)) 1)) (hash)))
        (define group2 (cond
                         [(non-empty-string? (third re-query))
                          (group2-query-to-hash (string-split (third re-query) "->") group1)]
@@ -63,13 +64,17 @@
     [(regexp-match #px"med\\(\\w*\\)|count\\(\\w*\\)|sum\\(\\w*\\)" (first col_list))
      (scan-columns (remove (first col_list) col_list) (hash-set query-hash "agregate" (first (regexp-match #px"med\\(\\w*\\)|count\\(\\w*\\)|sum\\(\\w*\\)" (first col_list)))) (append result (list (first col_list))))]
     [(regexp-match #px"case\\(.*\\)" (first col_list))
-     (let ([re-cond (regexp-match #px"case\\(condition\\((when [\\w\\s\\d<>=]* then \"[\\w\\s\\d<>=]*\")(?:;(when [\\w\\s\\d<>=]* then \"[\\w\\s\\d<>=]*\"))*;(else \"[\\w\\d]*\")?\\) end as ([\\w\\d]*)\\)" (first col_list))])
-       (scan-columns (remove (first col_list) col_list) (hash-set query-hash "case" (list-tail re-cond 1)) (append result (last re-cond))))]
+     (let ([re-cond (filter string? (regexp-match #px"case\\(condition\\((when [\\w\\s\\d<>=]* then \"[\\w\\s\\d<>=]*\")(?:;(when [\\w\\s\\d<>=]* then \"[\\w\\s\\d<>=]*\"))*;(else \"[\\w\\d]*\")?\\) end as ([\\w\\d]*)\\)" (first col_list)))])
+       (scan-columns (remove (first col_list) col_list) (hash-set query-hash "case" (list-tail re-cond 1)) (append result (list (last re-cond)))))]
     [else
      (scan-columns (remove (first col_list) col_list) query-hash (append result (list (first col_list))))]))
 
 
-;(perform-query "select * from resources/wef.csv where(col>10 and row<44)->groupby(xol)")
+;(perform-query "select case(condition(when col>5 then \"hello\";when col<5 then \"ok\";else \"hmmm\") end as col),row from resources/wef.csv where(col>10 and row<44)->groupby(xol)")
 
+
+(define (condition-to-list condition)
+  (filter string? (regexp-match #px"(?:(when) (.*) then \"(.*)\")|(?:(else) (.*))" condition)))
 ;;
-  
+
+;(condition-to-list "when col>10 then lol")
